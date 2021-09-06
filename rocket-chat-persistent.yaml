@@ -27,7 +27,7 @@ objects:
         maxUnavailable: 25%
         maxSurge: 25%
       resources: {}
-    replicas: 1
+    replicas: 3
     test: false
     selector:
       matchLabels:
@@ -82,7 +82,6 @@ objects:
         dnsPolicy: ClusterFirst
         securityContext: {}
 
-
 - kind: Service
   apiVersion: v1
   metadata:
@@ -104,7 +103,7 @@ objects:
   apiVersion: v1
   metadata:
     name: rocketchat
-    labels: 
+    labels:
       app: rocketchat
   spec:
     to:
@@ -116,23 +115,8 @@ objects:
       termination: edge
       insecureEdgeTerminationPolicy: Redirect
 
-
-# tasks file for mongodb
-- kind: PersistentVolumeClaim
+- kind: Secret
   apiVersion: v1
-  metadata:
-    name: rocketchat-mongodb
-    labels:
-      app: rocketchat
-  spec:
-    accessModes:
-    - ReadWriteOnce
-    resources:
-      requests:
-        storage: 10Gi
-
-- apiVersion: v1
-  kind: Secret
   metadata:
     name: mongodb-secret
     template.openshift.io/base64-expose-username: "{.data['username']}"
@@ -148,6 +132,7 @@ objects:
     admin_password: ${MONGODB_ADMIN_PASSWORD}
     keyfile: ${MONGODB_KEYFILE}
 
+
 - kind: StatefulSet
   apiVersion: apps/v1
   metadata:
@@ -158,7 +143,7 @@ objects:
   spec:
     updateStrategy:
       type: RollingUpdate
-    replicas: 1
+    replicas: 3
     test: false
     selector:
       matchLabels:
@@ -170,8 +155,6 @@ objects:
       spec:
         volumes:
         - name: mongodb-data
-          persistentVolumeClaim:
-            claimName: rocketchat-mongodb
         containers:
         - name: mongodb
           image: registry.access.redhat.com/rhscl/mongodb-36-rhel7:1-45
@@ -241,6 +224,16 @@ objects:
         terminationGracePeriodSeconds: 30
         dnsPolicy: ClusterFirst
         securityContext: {}
+    volumeClaimTemplates:
+    - metadata:
+        name: rocketchat
+        labels:
+          app: rocketchat
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 10Gi
 
 - kind: Service
   apiVersion: v1
@@ -255,7 +248,7 @@ objects:
       protocol: TCP
       port: 27017
       targetPort: 27017
-    selector: 
+    selector:
       service: rocketchat-mongodb
     type: ClusterIP
     clusterIP: None
