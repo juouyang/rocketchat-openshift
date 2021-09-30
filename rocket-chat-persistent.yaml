@@ -143,7 +143,7 @@ objects:
   spec:
     updateStrategy:
       type: RollingUpdate
-    replicas: 3
+    replicas: 1
     test: false
     selector:
       matchLabels:
