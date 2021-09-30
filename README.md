@@ -7,7 +7,7 @@ This repository hosts a template to provision Rocket Chat in OpenShift.
 
 ```bash
 oc new-project rocket-chat
-oc process -f https://raw.githubusercontent.com/andykrohg/rocketchat-openshift/main/rocket-chat-persistent.yaml | oc create -f -
+oc process -f https://raw.githubusercontent.com/juouyang/rocketchat-openshift/main/rocket-chat-persistent.yaml | oc create -f -
 ```
 > This is _not_ idempotent, if you want to make a change to the template for some reason, you'll need to delete everything and recreate as opposed to using `oc apply`
 
