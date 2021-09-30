@@ -18,7 +18,7 @@ oc process -f https://raw.githubusercontent.com/juouyang/rocketchat-openshift/ma
 * Rocket.Chat uses a domain check code to verify the validity of the e-mail address. To disable it, run the following commands:
 
 ```bash
-# oc port-forward <mongodb_pod> 27017
+# oc rsh <mongodb_pod>
 # mongo localhost:27017
 
 > use rocketchat
