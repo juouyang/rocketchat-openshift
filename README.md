@@ -22,6 +22,6 @@ oc process -f https://raw.githubusercontent.com/juouyang/rocketchat-openshift/ma
 # mongo localhost:27017
 
 > use rocketchat
-> db.auth('rocketchat-admin','rocketchat')
+> db.auth('$USER','$PASS')
 > db.rocketchat_settings.update({_id:'Accounts_UseDNSDomainCheck'},{$set:{value:false}})
 ```
